@@ -28,30 +28,35 @@ function NotesView()
         }
     });
         
-    //Lajittelun käsittelyä
-
+    // Lajittelun valinta
     const handleSortChange = (e) => {
         setSortOption(e.target.value);
     };
 
+    // Muistiinpanon valinta
     const handleSelectNote = (note) => {
         setSelectedNote(note);
         setViewMode('read');
     };
 
+    // Muistiinpanon muokkaustila
     const handleEditNote = () => {
         setViewMode('edit');
     };
 
+    // Muistiinpanon tallennus
     const handleSaveNote = () => {
-        setNotes((prevNotes) =>
-            prevNotes.map((note)=>
-                note.id === selectedNote.id ? selectedNote : note)
-    );
-        setViewMode('read');
-        alert('Note saved!');
+        if (!selectedNote.content.trim()) {
+            alert("Note content cannot be empty!") //duh
+            return;
+        }
+        deleteNote(selectedNote.id); // Poistaa vanhan
+        addNote(selectedNote.courseId, selectedNote.title, selectedNote.content); // Lisää uuden
+        setViewMode("read");
+        alert("Note saved!");
     };
 
+    // Takaisin muistiinpanolista näkymään
     const handleBackToList = () => {
         setSelectedNote(null);
         setViewMode('read')
