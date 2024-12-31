@@ -1,23 +1,25 @@
 import React from 'react';
-//import { useState } from 'react'; jos vaa routtaa ne :D
 import {Routes, Route, Link} from 'react-router-dom';
 import WriteNotes from './writeNotes.jsx';
 import CourseView from './courseView.jsx';
 import NotesView from './notesView.jsx';
 import '../styles/App.css';
+import { DataProvider } from '../data/dataContext.jsx';
 
 function App() {
   //const [view, setview] = useState('home'); Tosiaan vähä testailin :D
 
   return (
-    <div className="app-container">
-        <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/writeNotes' element={<WriteNotes onBack={() => setView('home')}/>}/>
-          <Route path='/courseView' element={<CourseView onBack={() => setView('home')}/>}/>
-          <Route path='/readNotes' element={<NotesView onBack={() => setView('home')}/>}/>
-        </Routes>
-    </div>
+    <DataProvider>
+      <div className="app-container">
+          <Routes>
+            <Route path='/' element={<Home />}/>
+            <Route path='/writeNotes' element={<WriteNotes />}/>
+            <Route path='/courseView' element={<CourseView />}/>
+            <Route path='/readNotes' element={<NotesView />}/>
+          </Routes>
+      </div>
+      </DataProvider>
   );
 }
 

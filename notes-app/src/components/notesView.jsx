@@ -5,6 +5,12 @@ import { DataContext } from "../data/dataContext";
 function NotesView()
 {
     const {notes, courses, addNote, deleteNote} = useContext(DataContext);
+    console.log("Notes data:", notes); //Debugailua
+
+    if (!notes || notes.length === 0) {
+        return <p>No notes here!</p> // Ei muistiinpanoja
+    }
+
     const navigate = useNavigate();
     const [selectedNote, setSelectedNote] = useState(null);
     const [viewMode, setViewMode] = useState("read");
@@ -14,9 +20,9 @@ function NotesView()
     const sortedNotes = [...notes].sort((a, b) => {
         switch (sortOption) {
             case "date-ascending":
-                return new Date(a.date) - new Date(b.date);
-            case " date-descending":
-                return new Date(b.date) - new Date(a.date);
+                return new Date(a.timestamp) - new Date(b.timestamp);
+            case "date-descending":
+                return new Date(b.timestamp) - new Date(a.timestamp);
             case "course":
                 const courseA = courses.find((course)=> course.id === a.courseId)?.name || "";
                 const courseB = courses.find((course)=> course.id === b.courseId)?.name || "";
@@ -46,12 +52,16 @@ function NotesView()
 
     // Muistiinpanon tallennus
     const handleSaveNote = () => {
-        if (!selectedNote.content.trim()) {
+        if (!selectedNote.text.trim()) {
             alert("Note content cannot be empty!") //duh
             return;
         }
-        deleteNote(selectedNote.id); // Poistaa vanhan
-        addNote(selectedNote.courseId, selectedNote.title, selectedNote.content); // Lisää uuden
+        const updatedNotes = notes.map((note) =>
+        note.id === selectedNote.id ? {...note, text: selectedNote.content}:note
+    );
+        //päivitä muistiinpanot lol!
+        deleteNote(selectedNote.id); //hus vanha?
+        addNote(selectedNote.course.id, "Updated Note", selectedNote.text) //tilalle uusi!
         setViewMode("read");
         alert("Note saved!");
     };
@@ -79,12 +89,17 @@ function NotesView()
 
 
                     <ul>
-                        {notes.map((note) => (
-                            <li key={note.id} onClick={() => handleSelectNote(note)}>
-                               <strong>{note.title}</strong> ({note.date}) - {note.content.substring(0, 20)}...
-                               <button onClick={() => handleSelectNote(note)}> Open </button>
-                            </li>
-                        ))}
+                        {sortedNotes.length === 0 ? (
+                            <p>No notes here</p>
+                        ) : (
+                            sortedNotes.map((note) => (
+                                <li key={note.id}>
+                                    <strong>{note.title || "Untitled Note"}</strong> ({note.timestamp||"No Date"}) -{" "}
+                                    {(note.text ? note.text.substring(0,20) : "No content available")}...
+                                    <button onClick={() => handleSelectNote(note)}>Open</button>
+                                </li>
+                            ))
+                        )}
                     </ul>
                     <button onClick={(() => navigate('/'))}> Back </button>
                 </>
@@ -97,12 +112,12 @@ function NotesView()
                         <p>{selectedNote.content}</p>
                         <button onClick={handleEditNote}> Edit </button>
                         </>
-                    ): (
+                    ) : (
                         <>
-                        <textarea value={selectedNote.content}
-                        onChange={(e) => setSelectedNote({...selectedNote, content: e.target.value})}
-                        />
-                        <button onClick={handleSaveNote}> Save </button>
+                            <textarea value={selectedNote.text}
+                            onChange={(e) => setSelectedNote({...selectedNote, text: e.target.value})}
+                            />
+                            <button onClick={handleSaveNote}> Save </button>
                         </>
                     )}
                     <button onClick={handleBackToList}> Back to list </button>

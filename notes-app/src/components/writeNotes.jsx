@@ -14,8 +14,8 @@ function WriteNotes({onSaveNote}) {
     }, []);
 
     const fetchCourses = async () => {
-        try {                             //Päivitä tänne oikeet polut!  
-            const response = await fetch('API-päätepiste joka palauttaa kurssit')
+        try {                             //Päivitä tänne oikeet polut!  hups melkei unohtu lol
+            const response = await fetch('https://luentomuistiinpano-api.netlify.app/.netlify/functions/courses')
             const data = await response.json();
             setCourses(data);
         } catch (error) {
@@ -26,7 +26,7 @@ function WriteNotes({onSaveNote}) {
     const handleAddNote = () => {
         if (note&&course) {
             console.log({note, date, course});
-            const newNote = {id: Date.now(), title: course, date, content: note};
+            const newNote = {id: Date.now(), title: course, date, text: note};
             onSaveNote(newNote); // muistiinpanon tallennus (duh, nimi)
             setNote('');
             setCourse('');
