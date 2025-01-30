@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function CourseView() {
     const[courses, setCourses] = useState([]); 
@@ -35,9 +35,10 @@ function CourseView() {
         const newCourseData = {id:Date.now(), name: newCourse, notesCount: 0};
 
         const updatedCourses = [...courses, newCourseData];
-            setCourses((updatedCourses),
-            localStorage.setItem("courses", JSON.stringify(updatedCourses)),
-            setNewCourse("") // tyhjennä syöte
+            setCourses(updatedCourses);
+            localStorage.setItem("courses", JSON.stringify(updatedCourses));
+            setNewCourse("");
+        };
     
 
     // Poistetaa kurssi
